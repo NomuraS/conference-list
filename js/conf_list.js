@@ -1,8 +1,3 @@
-var __spreadArray = (this && this.__spreadArray) || function (to, from) {
-    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
-        to[j] = from[i];
-    return to;
-};
 var query = "https://www.illc.uva.nl/NewsandEvents/Events/Conferences/";
 $.ajax({
     url: query,
@@ -69,7 +64,6 @@ function obj2htmlstr(xobjs, $deadOrComing) {
     return _html;
 }
 function getJsonFromHTML($html, $deadOrComing) {
-    // console.log($deadOrComing)
     var _object_list = [];
     var $html2 = $html.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
     var _topic_cfp_conf = $($html2).find(".linklist");
@@ -80,7 +74,6 @@ function getJsonFromHTML($html, $deadOrComing) {
         var _common = _list_cfp[i].innerText.split("(deadline:");
         var _deadline = _common[1]; // 締切
         var _date_name_place = _common[0].split(",");
-        // console.log(_date_name_place)
         var _conf_name_place = function () {
             if (_date_name_place.length === 1) {
                 return {
@@ -109,7 +102,6 @@ function getJsonFromHTML($html, $deadOrComing) {
                 var last3 = _date_name_place.length - 2;
                 var dnp1 = _date_name_place.slice(1, last2);
                 var dnp2 = _date_name_place.slice(1, last3);
-                // console.log("dnp1",dnp1)
                 // console.log("dnp2",dnp2)
                 if (dnp2.join(",").slice(-1) === ")") {
                     return {
@@ -127,7 +119,6 @@ function getJsonFromHTML($html, $deadOrComing) {
                 }
             }
         };
-        // console.log(_conf_name_place().date)
         _object_list[i] = {
             detail_url: _detail_url,
             conf_date: formatDate2(_conf_name_place().date),
@@ -140,9 +131,6 @@ function getJsonFromHTML($html, $deadOrComing) {
         _loop_1();
     }
     return _object_list;
-}
-function head($x) {
-    return $x[0];
 }
 function formatDate2($date) {
     if ($date !== undefined && $date !== "") {
@@ -185,8 +173,6 @@ function formatDate2($date) {
                 }
             }
         };
-        console.log("fff", fff());
-        // console.log(eee.length)
         var _info = function () {
             aaa_1.pop();
             aaa_1.pop();
@@ -224,59 +210,5 @@ function replaceMonth2num($num) {
             .replace("October", "10")
             .replace("November", "11")
             .replace("December", "12");
-    }
-}
-function replaceArrayElements(array, targetId, sourceId) {
-    return array.reduce(function (resultArray, element, id, originalArray) { return __spreadArray(__spreadArray([], resultArray), [
-        id === targetId ? originalArray[sourceId] :
-            id === sourceId ? originalArray[targetId] :
-                element
-    ]); }, []);
-}
-function formatDate($date) {
-    if ($date !== undefined && $date !== "") {
-        var aaa_2 = $date
-            .replace("Monday", "")
-            .replace("Tuesday", "")
-            .replace("Wednesday", "")
-            .replace("Thursday", "")
-            .replace("Friday", "")
-            .replace("Saturday", "")
-            .replace("Sunday", "")
-            .split(" ")
-            .filter(function (x) { return x !== ""; })
-            .filter(function (x) { return x !== "\n"; })
-            .filter(function (x) { return x !== ")\n"; });
-        var _year = aaa_2[aaa_2.length - 1]
-            .replace(")", "")
-            .replace("20", "'");
-        var _month = aaa_2[aaa_2.length - 2]
-            .replace("January", "01")
-            .replace("February", "02")
-            .replace("March", "03")
-            .replace("April", "04")
-            .replace("May", "05")
-            .replace("June", "06")
-            .replace("July", "07")
-            .replace("August", "08")
-            .replace("September", "09")
-            .replace("October", "10")
-            .replace("November", "11")
-            .replace("December", "12");
-        var _day = function () {
-            aaa_2.pop();
-            aaa_2.pop();
-            var bbb = aaa_2.join("").split(")");
-            if (bbb.length === 1) {
-                return bbb[0];
-            }
-            else {
-                return bbb[1] + "<br><span style=\"color:red;\">" + bbb[0] + ")</span>";
-            }
-        };
-        return _year + "/" + _month + "/" + _day();
-    }
-    else {
-        return "";
     }
 }

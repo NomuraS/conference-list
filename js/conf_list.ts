@@ -79,7 +79,6 @@ function obj2htmlstr(xobjs,$deadOrComing:number): string{
 }
 
 function getJsonFromHTML($html: string,$deadOrComing:number) {
-    // console.log($deadOrComing)
     let _object_list = []
     const $html2 = $html.replace(/&lt;/g, "<").replace(/&gt;/g, ">")
     const _topic_cfp_conf = $($html2).find(".linklist")
@@ -90,7 +89,6 @@ function getJsonFromHTML($html: string,$deadOrComing:number) {
         const _common = _list_cfp[i].innerText.split("(deadline:")
         const _deadline = _common[1] // 締切
         const _date_name_place=_common[0].split(",")
-        // console.log(_date_name_place)
         const _conf_name_place = () => {
             if (_date_name_place.length === 1) {
                 return {
@@ -116,7 +114,6 @@ function getJsonFromHTML($html: string,$deadOrComing:number) {
                 const last3 = _date_name_place.length - 2
                 const dnp1 = _date_name_place.slice(1,last2)
                 const dnp2 = _date_name_place.slice(1,last3)
-                // console.log("dnp1",dnp1)
                 // console.log("dnp2",dnp2)
                 if(dnp2.join(",").slice(-1)===")"){
                     return {
@@ -133,7 +130,6 @@ function getJsonFromHTML($html: string,$deadOrComing:number) {
                 }
             }
         }
-        // console.log(_conf_name_place().date)
         _object_list[i] = {
             detail_url: _detail_url,
             conf_date: formatDate2(_conf_name_place().date),
@@ -187,9 +183,6 @@ function formatDate2($date: string): string {
                 }
             }
         }
-        console.log("fff",fff())
-        // console.log(eee.length)
-
         const _info = () => {
             aaa.pop()
             aaa.pop()
