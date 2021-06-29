@@ -1,0 +1,170 @@
+declare let $: any
+declare let _: any
+let HTML_TABLE = "";
+
+const query = "https://www.illc.uva.nl/NewsandEvents/Events/Conferences/"
+
+$.ajax({
+  url:  query,
+  type: 'POST',
+  data: {
+    id: 1,
+    mode: 'hoge'
+  },
+  dataType: 'html'
+}).done(( data, textStatus, jqXHR )=> {
+    console.log(textStatus)
+            const $objs  = getJsonFromHTML(data)
+            for (var i = 0; i < $objs.length; i++) {
+                console.log($objs)
+                const _detail_url = query + $objs[i].detail_url
+                const _conf_date = $objs[i].conf_date
+                const _conf_name = $objs[i].conf_name
+                const _conf_place = $objs[i].conf_place
+                const _deadline = () => {
+                    const hoge = $objs[i].deadline
+                    if (hoge === undefined) {
+                        return "-"
+                    } else {
+                        return hoge
+                    }
+                }
+                HTML_TABLE += `<tr>`
+                HTML_TABLE += `<td>${_deadline()}</td>`
+                HTML_TABLE += `<td style="width:120px">${_conf_date}</td>`
+                HTML_TABLE += `<td>${_conf_name}</td>`
+                HTML_TABLE += `<td>${_conf_place}</td>`
+                HTML_TABLE += `<td><a href="${_detail_url}"  target="_blank">detail</a></td>`
+                HTML_TABLE += `</tr>`
+            }
+        const _html = `\
+            <table id="id_sorttable" class="tablesorter ">
+                <thead>
+                    <tr>
+                        <th>submission<br>deadline</th>
+                        <th>date<br></th>
+                        <th>conference name</th>
+                        <th>place<br></th>
+                        <th>link<br></th>
+                    </tr>
+                </thead>`+
+            HTML_TABLE +
+            `</table>`
+        document.getElementById("id_conf_list").innerHTML = _html //writeHtml(HTML_TABLE)
+    
+    // console.log(data)
+    // console.log(textStatus)
+    // console.log(jqXHR)
+  //成功
+}).fail(( jqXHR, textStatus, errorThrown)=> {
+    console.log("fail")
+  //失敗
+}).always(( jqXHR, textStatus)=> {
+    console.log("always")
+  //通信完了
+});
+
+
+
+function getJsonFromHTML($html: string) {
+    let _object_list = []
+    const $html2 = $html.replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+    const _topic_cfp_conf = $($html2).find(".linklist")
+    const _cfp = _topic_cfp_conf[1]
+    const _conf = _topic_cfp_conf[2]
+    const _list_cfp = $(_cfp).find("li a")
+
+    for (var i = _list_cfp.length - 1; i >= 0; i--) {
+        const _detail_url = $(_list_cfp[i]).attr('href')
+        const _common = _list_cfp[i].innerText.split("(deadline:")
+        const _deadline = _common[1] // 締切
+        const _conf_date = () => {
+            const hoge = _common[0].split(",") // 会議日時
+            if (hoge.length === 1) {
+                return ""
+            } else {
+                return hoge[0]
+            }
+        }
+        const _date_name = _common[0].split(",")
+        const _conf_name_place = () => {
+            if (_date_name.length === 1) {
+                return {
+                    name: _date_name[0],
+                    place: ""
+                }
+            } else {
+                let _common2 = _common[0].split(",")
+                _common2.shift();
+                const _place = _common2.pop();
+                if (_common2.length === 1) {
+                    return {
+                        name: _common2.join(","),
+                        place: _place
+                    }
+                } else {
+                    _common2.pop();
+                    return {
+                        name: _common2.join(","),
+                        place: _place
+                    }
+                }
+
+            }
+        }
+        _object_list[i] = {
+            detail_url: _detail_url,
+            conf_date: formatDate(_conf_date()),
+            conf_name: _conf_name_place().name,
+            conf_place: _conf_name_place().place,
+            deadline: formatDate(_deadline)
+        }
+    }
+    return _object_list
+}
+
+function formatDate($date: string): string {
+    if ($date !== undefined && $date !== "") {
+        const aaa = $date
+            .replace("Monday", "")
+            .replace("Tuesday", "")
+            .replace("Wednesday ", "")
+            .replace("Thursday ", "")
+            .replace("Friday", "")
+            .replace("Saturday", "")
+            .replace("Sunday", "")
+            .split(" ")
+            .filter(x => x !== "")
+            .filter(x => x !== "\n")
+            .filter(x => x !== ")\n")
+        const _year = aaa[aaa.length - 1]
+            .replace(")", "")
+            .replace("20", "'")
+        const _month = aaa[aaa.length - 2]
+            .replace("January", "01")
+            .replace("February", "02")
+            .replace("March", "03")
+            .replace("April", "04")
+            .replace("May", "05")
+            .replace("June", "06")
+            .replace("July", "07")
+            .replace("August", "08")
+            .replace("September", "09")
+            .replace("October", "10")
+            .replace("November", "11")
+            .replace("December", "12")
+        const _day = () => {
+            aaa.pop()
+            aaa.pop()
+            const bbb = aaa.join("").split(")")
+            if (bbb.length === 1) {
+                return bbb[0]
+            } else {
+                return `${bbb[1]}<br><span style="color:red;">${bbb[0]})</span>`
+            }
+        }
+        return `${_year}/${_month}/${_day()}`
+    } else {
+        return ""
+    }
+}
