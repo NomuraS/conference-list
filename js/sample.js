@@ -7,9 +7,9 @@ $.ajax({
   },
   dataType: 'html'
 }).done(function( data, textStatus, jqXHR ) {
-  //成功
+  //success
 }).fail(function( jqXHR, textStatus, errorThrown) {
-  //失敗
+  //fail
 }).always(function( jqXHR, textStatus) {
-  //通信完了
+  //always
 });
