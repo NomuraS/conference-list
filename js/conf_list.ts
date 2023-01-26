@@ -19,9 +19,6 @@ $.ajax({
     const $htmlstr2 = obj2htmlstr( $objs2,2)
     document.getElementById("id_conf_list").innerHTML  = $htmlstr
     document.getElementById("id_conf_list2").innerHTML = $htmlstr2//writeHtml(HTML_TABLE)
-        // console.log(data)
-    // console.log(textStatus)
-    // console.log(jqXHR)
 }).fail(( jqXHR, textStatus, errorThrown)=> {
     console.log(textStatus)//fail
 }).always(( jqXHR, textStatus)=> {
@@ -114,7 +111,6 @@ function getJsonFromHTML($html: string,$deadOrComing:number) {
                 const last3 = _date_name_place.length - 2
                 const dnp1 = _date_name_place.slice(1,last2)
                 const dnp2 = _date_name_place.slice(1,last3)
-                // console.log("dnp2",dnp2)
                 if(dnp2.join(",").slice(-1)===")"){
                     return {
                         date:_date_name_place[0],
